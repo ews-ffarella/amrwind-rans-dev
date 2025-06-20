@@ -1,5 +1,5 @@
 # Geometry 
-geometry.prob_lo                            = -2000.0 -1100 -1
+geometry.prob_lo                            = -2000.0 -1100 0
 geometry.prob_hi                            = 6000.0 1100 1200
 geometry.is_periodic                        = 0 1 0
 # Grid 
@@ -108,6 +108,7 @@ zlo.type                                           = "wall_model"
 ABL.initial_wind_profile                           = true
 ABL.terrain_aligned_profile                        = true
 ABL.rans_1dprofile_file                            = "cosine_hill_profile.amrwind" 
+ABL.rans_1d_ncols                                = 6
 
 
 # Projection of velocities to faces
@@ -135,8 +136,8 @@ sdr_diffusion.mg_rtol                              = -1
 sdr_diffusion.mg_atol                              = 1e-6
 
 incflo.verbose                              = 0
-incflo.initial_iterations                   = 4
-incflo.do_initial_proj                      = 1
+incflo.initial_iterations                   = 0
+incflo.do_initial_proj                      = 0
 
 incflo.use_godunov                          = 1
 incflo.godunov_type                         = "weno_z"

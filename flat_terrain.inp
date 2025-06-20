@@ -1,5 +1,5 @@
 # Geometry 
-geometry.prob_lo                            = 0.0 0.0 0.0
+geometry.prob_lo                            = 0.0 0.0 -5
 geometry.prob_hi                            = 860 80 120
 geometry.is_periodic                        = 1 1 0
 # Grid 
@@ -55,6 +55,7 @@ ABL.perturb_ref_height                      = 100.0
 ABL.perturb_temperature                     = false
 ABL.perturb_velocity                        = false
 ABL.rans_1dprofile_file                     = "rans_1d.info"
+ABL.rans_1d_ncols                           = 6
 ABL.reference_temperature                   = 300.0
 ABL.stats_output_format                     = netcdf
 ABL.surface_roughness_z0                    = 0.0723
