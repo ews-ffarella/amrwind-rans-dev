@@ -1,0 +1,143 @@
+# Geometry 
+geometry.prob_lo                            = 0.0 0.0 0.0
+geometry.prob_hi                            = 860 80 120
+geometry.is_periodic                        = 1 1 0
+# Grid 
+amr.n_cell                                  = 96 16 64
+amr.max_level                               = 0
+# Simulation control parameters
+#time.stop_time                              = 16000
+time.max_step                               = 500000
+time.initial_dt                             = 0.1
+time.cfl                                    = 0.5
+#time.fixed_dt                               = 1.0 
+time.init_shrink                            = 0.1
+time.regrid_interval                        = -1
+time.plot_interval                          = 5000
+time.checkpoint_interval                    = -1
+# incflo
+incflo.physics                              = ABL
+incflo.density                              = 1.225
+incflo.gravity                              = 0.  0. -9.81  # Gravitational force (3D)
+incflo.velocity                             = 10.0 0.0 0.0 
+incflo.verbose                              = 0
+incflo.initial_iterations                   = 8
+incflo.do_initial_proj                      = 1
+incflo.constant_density                     = true
+incflo.use_godunov                          = true
+incflo.godunov_type                         = "weno_z"
+incflo.diffusion_type                       = 2
+# transport equation parameters
+transport.model                             = ConstTransport
+transport.viscosity                         = 1e-5
+transport.laminar_prandtl                   = 0.7
+transport.turbulent_prandtl                 = 0.333
+# turbulence equation parameters
+# turbulence.model                            = KLAxell
+# TKE.source_terms = KransAxell
+turbulence.model                            = KOmegaSSTTerrain
+TKE.source_terms = KOmegaSSTTerrainTKESrc
+SDR.source_terms = KOmegaSSTTerrainSDRSrc
+
+# turbulence.model                            = KOmegaSST
+# TKE.source_terms = KwSSTSrc
+# SDR.source_terms = SDRSrc
+
+# Atmospheric boundary layer
+ABL.cutoff_height                           = 100.0
+ABL.deltaU                                  = 1.0
+ABL.deltaV                                  = 1.0
+ABL.initial_wind_profile                    = true
+ABL.kappa                                   = 0.41
+ABL.meso_sponge_start                       = 100
+ABL.normal_direction                        = 2
+ABL.perturb_ref_height                      = 100.0
+ABL.perturb_temperature                     = false
+ABL.perturb_velocity                        = false
+ABL.rans_1dprofile_file                     = "rans_1d.info"
+ABL.reference_temperature                   = 300.0
+ABL.stats_output_format                     = netcdf
+ABL.surface_roughness_z0                    = 0.0723
+ABL.surface_temp_flux                       = 0.0
+ABL.temperature_heights                     = 0  800  900 1800 2700
+ABL.temperature_values                      = 300 300 308 311 314
+ABL.Uperiods                                = 0.0
+ABL.Vperiods                                = 0.0
+ABL.wall_het_model                          = "mol"
+ABL.horizontal_sponge_temp                  = false
+ABL.horizontal_sponge_tke                   = false
+# ABL.monin_obukhov_length                    = -250
+
+# Source 
+ICNS.source_terms                           = ABLMeanBoussinesq BoussinesqBuoyancy  VelocityFreeAtmosphereForcing  
+Temperature.source_terms                   = TemperatureFreeAtmosphereForcing
+BoussinesqBuoyancy.reference_temperature    = 300.0
+BoussinesqBuoyancy.thermal_expansion_coeff  = 0.003333
+RayleighDamping.length_sloped_damping  = 5.0
+RayleighDamping.length_complete_damping  = 10.0
+RayleighDamping.reference_velocity  = 10.79523419 0 0
+RayleighDamping.time_scale = 5
+#CoriolisForcing.east_vector                 = 1.0 0.0 0.0
+#CoriolisForcing.latitude                    = 45.0
+#CoriolisForcing.north_vector                = 0.0 1.0 0.0
+#CoriolisForcing.rotational_time_period      = 86400.0
+CoriolisForcing.east_vector = 1.0 0.0 0.0
+CoriolisForcing.north_vector = 0.0 1.0 0.0
+CoriolisForcing.latitude = 90.0
+CoriolisForcing.rotational_time_period = 125663.706143592
+GeostrophicForcing.geostrophic_wind         = 10 0.0 0.0
+
+DragForcing.sponge_west                            = 0
+DragForcing.sponge_east                            = 0
+DragForcing.sponge_north                           = 0
+DragForcing.sponge_south                           = 0
+DragForcing.sponge_distance_west                   = 0
+DragForcing.sponge_distance_east                   = 0
+DragForcing.sponge_distance_south                  = 0
+DragForcing.sponge_distance_north                  = 0
+
+# BC 
+zhi.type                                    = "slip_wall"
+zhi.temperature_type                        = "fixed_gradient"
+zhi.temperature                             =  0.0
+
+zlo.type                                    = "wall_model"
+
+zhi.tke_type                                = "fixed_gradient"
+zhi.tke                                     = 0.0
+zhi.sdr_type                                = "fixed_gradient"
+zhi.sdr                                     = 0.0
+
+
+
+# Projection of velocities to faces
+mac_proj.num_pre_smooth                            = 6
+mac_proj.num_post_smooth                           = 6
+mac_proj.mg_rtol                                   = -1
+mac_proj.mg_atol                                   = 1e-6
+mac_proj.maxiter                                   = 25
+mac_proj.fmg_maxiter                               = 0
+# Node-based pressure projection
+nodal_proj.num_pre_smooth                          = 6
+nodal_proj.num_post_smooth                         = 6
+nodal_proj.mg_rtol                                 = -1
+nodal_proj.mg_atol                                 = 1e-6
+nodal_proj.maxiter                                 = 25
+nodal_proj.fmg_maxiter                             = 0
+# Cell-based Helmholtz-like solve for advancing momentum equations
+diffusion.mg_rtol                                  = -1
+diffusion.mg_atol                                  = 1e-6
+temperature_diffusion.mg_rtol                      = -1
+temperature_diffusion.mg_atol                      = 1e-6
+tke_diffusion.mg_rtol                              = -1
+tke_diffusion.mg_atol                              = 1e-6
+sdr_diffusion.mg_rtol                              = -1
+sdr_diffusion.mg_atol                              = 1e-6
+
+# xlo.type                                 = fixed_gradient
+# xhi.type                                 = pressure_outflow
+
+# xlo.sdr_type = fixed_gradient
+# xlo.tke_type = fixed_gradient
+# xlo.sdr  = 0
+# xlo.tke  = 0

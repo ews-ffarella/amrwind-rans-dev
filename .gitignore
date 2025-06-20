@@ -1,0 +1,6 @@
+plt*
+post_processing*
+chk*
+*.pvsm
+*.log
+*:Zone*

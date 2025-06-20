@@ -1,0 +1,149 @@
+# Geometry 
+geometry.prob_lo                            = -2000.0 -1100 -1
+geometry.prob_hi                            = 6000.0 1100 1200
+geometry.is_periodic                        = 0 1 0
+# Grid 
+amr.n_cell                                  = 200 48 96
+amr.max_level                               = 1
+
+tagging.labels = static
+tagging.static.type = CartBoxRefinement
+tagging.static.static_refinement_def = static_box.txt
+
+
+# Simulation control parameters
+time.max_step                               = 1000
+time.initial_dt                             = 1
+time.cfl                                    = 0.5
+#time.fixed_dt                               = 1.0 
+time.init_shrink                            = 0.1
+time.regrid_interval                        = -1
+time.plot_interval                          = 5
+time.checkpoint_interval                    = -1
+
+
+# io.outputs                                 = velocity mu_turb tke sdr
+io.int_outputs                              = terrain_blank terrain_drag 
+
+# incflo
+incflo.physics                              = ABL TerrainDrag
+incflo.density                              = 1.225
+incflo.gravity                              = 0.  0. -9.81  # Gravitational force (3D)
+incflo.velocity                             = 15.416037754791002 0.0 0.0 
+incflo.constant_density                     = true
+
+# transport equation parameters
+transport.model                             = ConstTransport
+transport.viscosity                         = 1e-5
+transport.laminar_prandtl                   = 0.7
+transport.turbulent_prandtl                 = 0.333
+
+
+
+# turbulence equation parameters
+turbulence.model                            = KLAxell
+TKE.source_terms                            = KransAxell
+
+turbulence.model                            = KOmegaSSTTerrain
+TKE.source_terms                            = KOmegaSSTTerrainTKESrc
+SDR.source_terms                            = KOmegaSSTTerrainSDRSrc
+
+# Atmospheric boundary layer
+ABL.cutoff_height                           = 1200.0
+ABL.deltaU                                  = 1.0
+ABL.deltaV                                  = 1.0
+ABL.kappa                                   = 0.41
+ABL.meso_sponge_start                       = 0.0
+ABL.normal_direction                        = 2
+ABL.perturb_ref_height                      = 1200.0
+ABL.perturb_temperature                     = false
+ABL.perturb_velocity                        = false
+ABL.rans_1dprofile_file                     = "rans_1d.info"
+ABL.reference_temperature                   = 300.0
+ABL.stats_output_format                     = netcdf
+ABL.surface_roughness_z0                    = 0.676
+ABL.surface_temp_flux                       = 0.0
+ABL.temperature_heights                     = 0  1800
+ABL.temperature_values                      = 300 300
+ABL.Uperiods                                = 0.0
+ABL.Vperiods                                = 0.0
+ABL.wall_het_model                          = "mol"
+ABL.horizontal_sponge_temp                  = false
+ABL.horizontal_sponge_tke                   = false
+ABL.monin_obukhov_length                    = 10000000
+
+# Source 
+ICNS.source_terms                          = ABLMeanBoussinesq BoussinesqBuoyancy  VelocityFreeAtmosphereForcing DragForcing
+Temperature.source_terms                   = TemperatureFreeAtmosphereForcing
+TerrainDrag.terrain_file                   = cosine_hill.amrwind
+
+
+CoriolisForcing.east_vector = 1.0 0.0 0.0
+CoriolisForcing.north_vector = 0.0 1.0 0.0
+CoriolisForcing.latitude = 90.0
+CoriolisForcing.rotational_time_period = 125663.706143592
+GeostrophicForcing.geostrophic_wind         =  15.416037754791002 0.0 0.0
+
+DragForcing.sponge_west                            = 0
+DragForcing.sponge_east                            = 0
+DragForcing.sponge_north                           = 0
+DragForcing.sponge_south                           = 0
+DragForcing.sponge_distance_west                   = 0
+DragForcing.sponge_distance_east                   = 0
+DragForcing.sponge_distance_south                  = 0
+DragForcing.sponge_distance_north                  = 0
+
+xlo.type                                           = "pressure_outflow"
+xhi.type                                           = "pressure_outflow"
+zhi.type                                           = "slip_wall"
+zhi.temperature_type                               = "fixed_gradient"
+zhi.temperature                                    =  0.0
+zlo.type                                           = "wall_model"
+
+# zhi.tke_type                                        = "fixed_gradient"
+# zhi.tke                                             = 0.0
+# zhi.sdr_type                                        = "fixed_gradient"
+# zhi.sdr                                             = 0.0
+
+ABL.initial_wind_profile                           = true
+ABL.terrain_aligned_profile                        = true
+ABL.rans_1dprofile_file                            = "cosine_hill_profile.amrwind" 
+
+
+# Projection of velocities to faces
+mac_proj.num_pre_smooth                            = 6
+mac_proj.num_post_smooth                           = 6
+mac_proj.mg_rtol                                   = -1
+mac_proj.mg_atol                                   = 1e-6
+mac_proj.maxiter                                   = 25
+mac_proj.fmg_maxiter                               = 4
+# Node-based pressure projection
+nodal_proj.num_pre_smooth                          = 6
+nodal_proj.num_post_smooth                         = 6
+nodal_proj.mg_rtol                                 = -1
+nodal_proj.mg_atol                                 = 1e-6
+nodal_proj.maxiter                                 = 25
+nodal_proj.fmg_maxiter                             = 4
+# Cell-based Helmholtz-like solve for advancing momentum equations
+diffusion.mg_rtol                                  = -1
+diffusion.mg_atol                                  = 1e-6
+temperature_diffusion.mg_rtol                      = -1
+temperature_diffusion.mg_atol                      = 1e-6
+tke_diffusion.mg_rtol                              = -1
+tke_diffusion.mg_atol                              = 1e-6
+sdr_diffusion.mg_rtol                              = -1
+sdr_diffusion.mg_atol                              = 1e-6
+
+incflo.verbose                              = 0
+incflo.initial_iterations                   = 4
+incflo.do_initial_proj                      = 1
+
+incflo.use_godunov                          = 1
+incflo.godunov_type                         = "weno_z"
+incflo.diffusion_type                       = 2
+
+KOmegaSSTTerrain_coeffs.tke_amb = 0.0
+KOmegaSSTTerrain_coeffs.sdr_amb = 0.0
+
+# turbulence.model                            = KLAxell
+# TKE.source_terms                            = KransAxell
